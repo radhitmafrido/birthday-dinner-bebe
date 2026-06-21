@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Dinner — untuk Shofi 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,500;1,600&family=Dancing+Script:wght@600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF1E7;
+    --blush:#F2C9D6;
+    --blush-soft:#F8DEE6;
+    --rose:#C8748C;
+    --rose-deep:#A85268;
+    --wine:#5E2238;
+    --ink:#3A2630;
+    --gold:#BFA15A;
+    --gold-light:#E4D4A8;
+    --shadow: 0 24px 50px -22px rgba(94,34,56,0.38);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 18% 8%, rgba(242,201,214,0.55), transparent 45%),
+      radial-gradient(circle at 88% 85%, rgba(191,161,90,0.20), transparent 42%),
+      var(--paper);
+    background-attachment: fixed;
+    font-family:'Jost', sans-serif;
+    color: var(--ink);
+    overflow-x:hidden;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    background-image: radial-gradient(rgba(94,34,56,0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  button{ font-family:inherit; cursor:pointer; }
+  button:focus-visible, a:focus-visible{
+    outline: 2px solid var(--rose-deep);
+    outline-offset: 3px;
+  }
+
+  /* ambient hearts */
+  .ambient-hearts{ position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .ambient-hearts span{
+    position:absolute;
+    bottom:-40px;
+    font-size: 1.1rem;
+    color: var(--rose);
+    opacity:.35;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp{
+    0%{ transform: translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.4; }
+    90%{ opacity:.25; }
+    100%{ transform: translateY(-110vh) rotate(25deg); opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ambient-hearts{ display:none; }
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  main{
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding: 40px 18px;
+  }
+
+  .screen{
+    width:100%; max-width:560px;
+    display:none; opacity:0; transform: translateY(14px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .screen.active{ display:block; opacity:1; transform:translateY(0); }
+
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:.22em; font-size:.7rem;
+    color:var(--rose-deep); font-weight:600; text-align:center; margin:0 0 8px;
+  }
+  h1,h2{ font-family:'Cormorant Garamond', serif; font-weight:700; text-align:center; color:var(--wine); margin:0 0 14px; }
+  h1{ font-size: clamp(2.1rem, 7vw, 3rem); }
+  h2{ font-size: clamp(1.5rem, 5.5vw, 2rem); }
+  .name-script{ font-family:'Dancing Script', cursive; font-weight:700; color:var(--rose-deep); font-size:1.18em; }
+
+  .sub{ text-align:center; color: rgba(58,38,48,0.75); font-size:.95rem; max-width:420px; margin:0 auto 22px; line-height:1.5; text-wrap:pretty; }
+  .sub.small{ margin-bottom:14px; font-size:.85rem; }
+
+  /* ---------- Page 1: Envelope ---------- */
+  .invite-stage{ display:flex; flex-direction:column; align-items:center; gap:30px; }
+
+  .envelope-wrap{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .envelope-wrap.opened{ display:none; }
+
+  .envelope{
+    position:relative;
+    width: min(78vw, 320px);
+    height: calc(min(78vw, 320px) * 0.62);
+    cursor:pointer;
+  }
+  .envelope-back{
+    position:absolute; inset:0;
+    background: linear-gradient(160deg, var(--blush-soft), var(--blush));
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(191,161,90,0.4);
+    overflow:hidden;
+  }
+  .envelope-back::after{
+    content:'';
+    position:absolute; left:0; right:0; bottom:0; top:36%;
+    background: linear-gradient(180deg, rgba(168,82,104,0.10), rgba(168,82,104,0));
+    clip-path: polygon(0 0, 50% 38%, 100% 0, 100% 100%, 0 100%);
+  }
+  .letter-peek{
+    position:absolute;
+    left:9%; right:9%; top:-4%;
+    height:55%;
+    background: var(--paper);
+    border:1px solid rgba(94,34,56,0.12);
+    border-radius:6px;
+    box-shadow: 0 -4px 12px rgba(94,34,56,0.10);
+    transition: transform .8s cubic-bezier(.2,.75,.25,1.05);
+    z-index:1;
+  }
+  .envelope-flap{
+    position:absolute; left:0; right:0; top:0; height:58%;
+    background: linear-gradient(160deg, var(--rose), var(--rose-deep));
+    clip-path: polygon(0 0, 100% 0, 50% 92%);
+    transform-origin: top center;
+    transition: transform .8s cubic-bezier(.3,.1,.2,1);
+    z-index:3;
+    box-shadow: 0 6px 14px rgba(94,34,56,0.18);
+  }
+  .wax-seal{
+    position:absolute; left:50%; top:46%; transform: translate(-50%,-50%);
+    width:54px; height:54px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, #8d723a 100%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cormorant Garamond', serif; font-weight:700; font-size:.95rem; color: #fff8ec;
+    letter-spacing:1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.4);
+    z-index:4;
+    transition: transform .5s ease .15s, opacity .5s ease .15s;
+  }
+  .wax-seal span{ font-size:.8em; margin: 0 1px; }
+
+  .envelope-front-label{
+    position:absolute; left:0; right:0; bottom:14px; text-align:center;
+    font-family:'Dancing Script', cursive; font-weight:600; font-size:1.05rem;
+    color: var(--wine); z-index:2;
+  }
+
+  .envelope.open .envelope-flap{ transform: rotateX(180deg); }
+  .envelope.open .wax-seal{ transform: translate(-50%,-50%) scale(0); opacity:0; }
+  .envelope.open .letter-peek{ transform: translateY(-130%) scale(1.02); }
+
+  .tap-hint{
+    font-size:.82rem; color: var(--rose-deep); margin:0;
+    animation: pulseHint 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseHint{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
+
+  .invite-card{
+    display:none;
+    width:100%;
+    background: var(--paper);
+    border: 1px solid rgba(191,161,90,0.45);
+    border-radius:14px;
+    padding: 36px 28px 30px;
+    box-shadow: var(--shadow);
+    position:relative;
+  }
+  .invite-card::before{
+    content:'';
+    position:absolute; inset:8px;
+    border:1px solid rgba(191,161,90,0.35);
+    border-radius:9px;
+    pointer-events:none;
+  }
+  .invite-card.show{ display:block; animation: cardIn .6s ease forwards; }
+  @keyframes cardIn{ from{ opacity:0; transform: translateY(16px) scale(.97);} to{ opacity:1; transform:translateY(0) scale(1);} }
+
+  .invite-body{ text-align:center; line-height:1.75; font-size:1rem; color: var(--ink); margin: 0 0 6px; text-wrap:pretty; }
+  .invite-signature{ text-align:center; margin: 10px 0 26px; font-size:1.1rem; color: var(--wine); }
+
+  .rsvp-stage{ position:relative; min-height:190px; padding-top:4px; display:flex; justify-content:center; align-items:flex-start; }
+  .btn{
+    border:none; border-radius: 999px;
+    padding: 13px 26px;
+    font-size: .92rem; font-weight:600;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-yay{
+    position:relative; z-index:2;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color:#fff8f3;
+    box-shadow: 0 10px 22px -8px rgba(168,82,104,0.65);
+  }
+  .btn-yay:hover{ transform: translateY(-2px) scale(1.03); }
+  .btn-yay.pulse{ animation: pulseYay 1.4s ease-in-out infinite; }
+  @keyframes pulseYay{ 0%,100%{ box-shadow: 0 10px 22px -8px rgba(168,82,104,0.65);} 50%{ box-shadow: 0 14px 30px -6px rgba(168,82,104,0.85);} }
+
+  .btn-nay{
+    position:absolute; left:0; top:0; z-index:3;
+    background: transparent;
+    color: var(--rose-deep);
+    border: 1.5px solid rgba(168,82,104,0.45) !important;
+    border-radius:999px;
+    padding: 12px 22px;
+    font-weight:500;
+    white-space:nowrap;
+    opacity:0;
+    transition: left .4s cubic-bezier(.34,1.56,.64,1), top .4s cubic-bezier(.34,1.56,.64,1), transform .25s ease, opacity .4s ease, font-size .25s ease;
+  }
+  .btn-nay:hover{ transform: scale(1.04); }
+
+  /* ---------- Page 2: Calendar ---------- */
+  .card-panel{
+    background: var(--paper);
+    border: 1px solid rgba(191,161,90,0.45);
+    border-radius:14px;
+    padding: 32px 24px;
+    box-shadow: var(--shadow);
+  }
+  .back-link{
+    display:inline-block; background:none; border:none; color: var(--rose-deep);
+    font-size:.85rem; margin-bottom:14px; padding:4px 0; font-weight:500;
+  }
+  .back-link:hover{ text-decoration: underline; }
+
+  .calendar{ max-width:360px; margin: 0 auto 22px; }
+  .cal-header{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:10px; font-family:'Cormorant Garamond', serif; font-weight:700;
+    color: var(--wine); font-size:1.2rem;
+  }
+  .cal-header button{
+    background: var(--blush-soft); border:none; width:32px; height:32px; border-radius:50%;
+    font-size:1.1rem; color: var(--wine); line-height:1;
+  }
+  .cal-header button:hover{ background: var(--blush); }
+  .cal-header button:disabled{ opacity:.35; cursor:not-allowed; }
+
+  .cal-weekdays{ display:grid; grid-template-columns: repeat(7,1fr); margin-bottom:6px; }
+  .cal-weekdays span{ text-align:center; font-size:.72rem; color: var(--rose-deep); font-weight:600; }
+
+  .cal-grid{ display:grid; grid-template-columns: repeat(7,1fr); gap:5px; }
+  .cal-day{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    border-radius:9px; font-size:.88rem; background: transparent; border:none;
+    color: var(--ink); transition: background .2s ease, color .2s ease;
+  }
+  .cal-day:not(:disabled):hover{ background: var(--blush-soft); }
+  .cal-day:disabled{ color: rgba(58,38,48,0.25); cursor:not-allowed; }
+  .cal-day.empty{ visibility:hidden; }
+  .cal-day.selected{ background: linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff8f3; font-weight:600; }
+
+  .time-picker{ margin: 6px auto 22px; max-width:360px; }
+  .time-pills{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .time-pill{
+    background: var(--blush-soft); border: 1.5px solid transparent; border-radius:999px;
+    padding: 9px 18px; font-size:.86rem; color: var(--wine); font-weight:500;
+    transition: all .2s ease;
+  }
+  .time-pill:hover{ background: var(--blush); }
+  .time-pill.selected{ background: linear-gradient(135deg, var(--rose), var(--rose-deep)); color:#fff8f3; }
+
+  .btn-confirm{ display:block; margin: 0 auto; opacity:.5; pointer-events:none; }
+  .btn-confirm.ready{ opacity:1; pointer-events:auto; }
+
+  /* ---------- Page 3: Ticket ---------- */
+  .ticket-stage{ display:flex; flex-direction:column; align-items:center; gap:24px; }
+  .ticket{
+    width:100%; max-width:420px;
+    display:flex;
+    background: var(--paper);
+    border-radius:16px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+    border: 1px solid rgba(191,161,90,0.45);
+  }
+  .ticket-main{ flex:1; padding: 26px 24px; position:relative; }
+  .ticket-eyebrow{
+    font-size:.66rem; letter-spacing:.25em; color: var(--gold); font-weight:700; margin:0 0 4px;
+  }
+  .ticket-title{ text-align:left; font-size:1.7rem; margin: 0 0 16px; }
+  .ticket-row{
+    display:flex; justify-content:space-between; gap:10px;
+    font-size:.82rem; padding: 7px 0; border-bottom: 1px dashed rgba(94,34,56,0.15);
+  }
+  .ticket-row span{ color: rgba(58,38,48,0.6); }
+  .ticket-row strong{ color: var(--wine); font-weight:600; text-align:right; }
+  .ticket-note{ font-size:.78rem; color: rgba(58,38,48,0.65); margin: 14px 0 0; text-align:center; text-wrap:pretty; }
+
+  .ticket-stub{
+    width:92px; flex-shrink:0;
+    background: linear-gradient(160deg, var(--rose), var(--rose-deep));
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    position:relative;
+    border-left: 2px dashed rgba(255,248,243,0.5);
+  }
+  .ticket-stub::before, .ticket-stub::after{
+    content:''; position:absolute; left:-9px; width:18px; height:18px; border-radius:50%;
+    background: var(--paper);
+  }
+  .ticket-stub::before{ top:-9px; }
+  .ticket-stub::after{ bottom:-9px; }
+  .stub-barcode{
+    width:14px; height:90px;
+    background: repeating-linear-gradient(90deg, rgba(255,248,243,0.85) 0 2px, transparent 2px 4px);
+    opacity:.8;
+  }
+  .stub-text{
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    color: #fff8f3; font-size:.7rem; letter-spacing:.2em; font-weight:600; margin:0;
+  }
+
+  .print-btn{ margin-bottom: 10px; }
+
+  /* ---------- Page 4: Dress code (satu card, sebelahan) ---------- */
+  .combo-card{
+    display:flex;
+    width:100%; max-width:460px;
+    background: var(--paper);
+    border: 1px solid rgba(191,161,90,0.45);
+    border-radius:16px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+    margin: 0 auto 26px;
+  }
+  .combo-left{
+    flex: 1 1 40%;
+    padding: 24px 18px;
+    border-right: 1.5px dashed rgba(94,34,56,0.18);
+  }
+  .combo-right{
+    flex: 1 1 60%;
+    padding: 24px 18px;
+    text-align:center;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .combo-right .eyebrow{ margin-bottom:4px; }
+  .combo-right h3{ font-family:'Cormorant Garamond', serif; color: var(--wine); font-size:1.25rem; margin:0 0 6px; }
+
+  .mini-ticket-title{ font-size:.88rem; font-weight:600; color: var(--wine); text-align:left; margin: 0 0 12px; font-family:'Cormorant Garamond', serif; }
+  .mini-ticket-row{ display:flex; flex-direction:column; gap:2px; padding:7px 0; border-bottom:1px dashed rgba(94,34,56,0.12); }
+  .mini-ticket-row:last-child{ border-bottom:none; }
+  .mini-ticket-row span{ color: rgba(58,38,48,0.55); font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; }
+  .mini-ticket-row strong{ color: var(--wine); font-size:.86rem; }
+
+  .dress-caption{ font-size:.78rem; color: rgba(58,38,48,0.7); margin: 0 0 16px; line-height:1.4; text-wrap:pretty; }
+
+  .photo-frame{
+    width: 140px; height: 140px;
+    border-radius: 10px;
+    position:relative;
+    transform: rotate(-2deg);
+    box-shadow: 0 6px 14px rgba(94,34,56,0.18);
+    flex-shrink:0;
+  }
+  .photo-frame img{
+    display:none;
+    width:100%; height:100%; object-fit:cover; border-radius:10px;
+  }
+  .photo-fallback{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px;
+    background: var(--blush-soft);
+    border: 2px dashed rgba(168,82,104,0.5);
+    border-radius:10px;
+    padding: 8px;
+  }
+  .photo-fallback .ph-icon{ font-size:1.6rem; color: var(--rose-deep); }
+  .photo-fallback .ph-text{ font-size:.64rem; color: var(--rose-deep); text-align:center; line-height:1.4; }
+  .photo-fallback code{ background: rgba(168,82,104,0.15); padding:1px 4px; border-radius:4px; font-size:.6rem; }
+
+  @media (max-width: 440px){
+    .combo-card{ flex-direction: column; }
+    .combo-left{ border-right:none; border-bottom: 1.5px dashed rgba(94,34,56,0.18); }
+  }
+
+  @media print{
+    body::before, .ambient-hearts{ display:none; }
+    main{ min-height:auto; padding:0; }
+    #screen-invite, #screen-calendar, #screen-ticket, .back-link, .print-btn{ display:none !important; }
+    #screen-dresscode{ display:block !important; opacity:1; transform:none; }
+    .ticket, .combo-card{ box-shadow:none; }
+    .photo-frame{ transform:none; }
+    .ticket-stage{ gap:16px; }
+  }
+
+  @media (max-width:380px){
+    .invite-card{ padding: 28px 18px 24px; }
+    .ticket-main{ padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient-hearts" id="ambientHearts" aria-hidden="true"></div>
+
+<main>
+
+  <!-- PAGE 1: ENVELOPE + INVITATION -->
+  <section class="screen active" id="screen-invite">
+    <div class="invite-stage">
+
+      <div class="envelope-wrap" id="envelopeWrap">
+        <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Buka amplop undangan">
+          <div class="envelope-back"></div>
+          <div class="letter-peek"></div>
+          <div class="envelope-flap" id="envelopeFlap">
+            <div class="wax-seal"></div>
+          </div>
+          <div class="envelope-front-label">For Shofi Tiasamara Aqila</div>
+        </div>
+        <p class="tap-hint"></p>
+      </div>
+
+      <div class="invite-card" id="inviteCard">
+        <p class="eyebrow">dinner invitation card</p>
+        <h1>Birthday Dinner</h1>
+        <p class="invite-body">
+          For <span class="name-script">Shofi Tiasamara Aqila</span>,<br><br>
+         so grateful to celebrate life with you, i hope this special moment leaves you with endless happiness
+          and the sweetest smile that stays long after tonight<br><br>
+          do you wanna dinner with me?
+        </p>
+        <p class="invite-signature">from <span class="name-script">Radhett</span></p>
+
+        <div class="rsvp-stage" id="rsvpStage">
+          <button class="btn btn-yay" id="btnYay">Yay</button>
+          <button class="btn btn-nay" id="btnNay">Nay</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PAGE 2: CALENDAR -->
+  <section class="screen" id="screen-calendar">
+    <button class="back-link" data-back="screen-invite">‹ kembali</button>
+    <div class="card-panel">
+      <p class="eyebrow"></p>
+      <h2>Pilih tanggal &amp; waktunya</h2>
+      <p class="sub">Udah aku siapin semuanya yaaa, sekarang kamu milih tanggalnya kapan</p>
+
+      <div class="calendar">
+        <div class="cal-header">
+          <button id="prevMonth" aria-label="Bulan sebelumnya">‹</button>
+          <span id="calMonthLabel"></span>
+          <button id="nextMonth" aria-label="Bulan berikutnya">›</button>
+        </div>
+        <div class="cal-weekdays" id="calWeekdays"></div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+
+      <div class="time-picker" id="timePicker" hidden>
+        <p class="sub small">Pilih Jam nya dongg</p>
+        <div class="time-pills" id="timePills"></div>
+      </div>
+
+      <button class="btn btn-yay btn-confirm" id="btnConfirmDate">Konfirmasi tanggal ini</button>
+    </div>
+  </section>
+
+  <!-- PAGE 3: TICKET -->
+  <section class="screen" id="screen-ticket">
+    <button class="back-link" data-back="screen-calendar">‹ ubah tanggal</button>
+    <div class="ticket-stage">
+      <div class="ticket" id="ticket">
+        <div class="ticket-main">
+          <p class="ticket-eyebrow">E · T I C K E T</p>
+          <h2 class="ticket-title">Birthday<br>Dinner</h2>
+          <div class="ticket-row"><span>Untuk</span><strong>Shofi Tiasamara Aqila</strong></div>
+          <div class="ticket-row"><span>Dari</span><strong>Radhett</strong></div>
+          <div class="ticket-row"><span>Tanggal</span><strong id="ticketDate">-</strong></div>
+          <div class="ticket-row"><span>Waktu</span><strong id="ticketTime">-</strong></div>
+          <div class="ticket-row"><span>Lokasi</span><strong>Tanya Pacarmu</strong></div>
+          <p class="ticket-note">jangan lupa disimpen ya tiketnyaa</p>
+        </div>
+        <div class="ticket-stub" aria-hidden="true">
+          <div class="stub-barcode"></div>
+          <p class="stub-text">GET FREE KISS UNLIMITIED</p>
+        </div>
+      </div>
+
+      <button class="btn btn-yay print-btn" id="btnPrint">Cetak Tiket</button>
+    </div>
+  </section>
+
+  <!-- PAGE 4: DRESS CODE + CETAK -->
+  <section class="screen" id="screen-dresscode">
+    <button class="back-link" data-back="screen-ticket">‹ kembali ke tiket</button>
+    <div class="ticket-stage">
+
+      <div class="combo-card">
+        <div class="combo-left">
+          <p class="mini-ticket-title">Ringkasan Tiket</p>
+          <div class="mini-ticket-row"><span>Untuk</span><strong>Shofi Tiasamara Aqila</strong></div>
+          <div class="mini-ticket-row"><span>Tanggal</span><strong id="dressTicketDate">-</strong></div>
+          <div class="mini-ticket-row"><span>Waktu</span><strong id="dressTicketTime">-</strong></div>
+          <div class="mini-ticket-row"><span>Lokasi</span><strong>Tanya Pacarmu</strong></div>
+        </div>
+        <div class="combo-right">
+          <p class="eyebrow">Satu Lagi</p>
+          <h3>Dress Code</h3>
+          <p class="dress-caption">Match Outfit</p>
+          <div class="photo-frame">
+            <img src="dress-code.jpg" alt="Foto referensi dress code" id="dressPhotoImg">
+            <div class="photo-fallback" id="photoFallback">
+              <span class="ph-icon">📷</span>
+              <span class="ph-text">Taruh fotomu di sini<br>ganti file <code>dress-code.jpg</code></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-yay print-btn" id="btnPrintFinal">Cetak Tiket</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ---------- Ambient hearts ----------
+  (function(){
+    const wrap = document.getElementById('ambientHearts');
+    const symbols = ['♥','♡','❀'];
+    for(let i=0;i<10;i++){
+      const s = document.createElement('span');
+      s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      s.style.left = Math.random()*100 + 'vw';
+      s.style.fontSize = (0.8 + Math.random()*1.2) + 'rem';
+      s.style.animationDuration = (10 + Math.random()*12) + 's';
+      s.style.animationDelay = (Math.random()*12) + 's';
+      wrap.appendChild(s);
+    }
+  })();
+
+  // ---------- Screen navigation ----------
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('.back-link').forEach(btn=>{
+    btn.addEventListener('click', () => showScreen(btn.dataset.back));
+  });
+
+  // ---------- Page 1: envelope open ----------
+  const envelope = document.getElementById('envelope');
+  const envelopeWrap = document.getElementById('envelopeWrap');
+  const inviteCard = document.getElementById('inviteCard');
+
+  function openEnvelope(){
+    if(envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+    setTimeout(()=>{
+      envelopeWrap.classList.add('opened');
+      inviteCard.classList.add('show');
+    }, 700);
+  }
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openEnvelope(); }
+  });
+
+  // ---------- Page 1: Nay dodges, Yay confirms ----------
+  const btnYay = document.getElementById('btnYay');
+  const btnNay = document.getElementById('btnNay');
+  const rsvpStage = document.getElementById('rsvpStage');
+
+  const nayPhrases = [
+    'Nay',
+    'Yakin gamauu?',
+    'Coba klik Yay deh',
+    'Yay aja dongg',
+    'Sini klik Yay aja',
+    'Pliss ini nayy terakhir'
+  ];
+  let nayAttempts = 0;
+
+  function rectsOverlap(a, b, buffer){
+    return !(a.right + buffer < b.left || a.left - buffer > b.right || a.bottom + buffer < b.top || a.top - buffer > b.bottom);
+  }
+
+  function placeNayInitial(){
+    const stageRect = rsvpStage.getBoundingClientRect();
+    const yayRect = btnYay.getBoundingClientRect();
+    const nayRect = btnNay.getBoundingClientRect();
+    let left = (yayRect.left - stageRect.left) + (yayRect.width - nayRect.width) / 2;
+    let top = (yayRect.bottom - stageRect.top) + 16;
+    left = Math.min(Math.max(left, 8), Math.max(stageRect.width - nayRect.width - 8, 8));
+    top = Math.min(Math.max(top, 8), Math.max(stageRect.height - nayRect.height - 8, 8));
+
+    // taruh tepat di posisi tanpa animasi geser dulu (biar ga keliatan "lompat" sendiri)
+    btnNay.style.transition = 'none';
+    btnNay.style.left = left + 'px';
+    btnNay.style.top = top + 'px';
+    void btnNay.offsetWidth; // paksa reflow
+    btnNay.style.transition = '';
+    requestAnimationFrame(() => { btnNay.style.opacity = '1'; });
+  }
+
+  function dodgeNay(){
+    nayAttempts = Math.min(nayAttempts + 1, nayPhrases.length - 1);
+    btnNay.textContent = nayPhrases[nayAttempts];
+
+    const stageRect = rsvpStage.getBoundingClientRect();
+    const nayRect = btnNay.getBoundingClientRect();
+    const yayRect = btnYay.getBoundingClientRect();
+    const yayRel = {
+      left: yayRect.left - stageRect.left, right: yayRect.right - stageRect.left,
+      top: yayRect.top - stageRect.top, bottom: yayRect.bottom - stageRect.top
+    };
+
+    const maxLeft = Math.max(stageRect.width - nayRect.width - 8, 8);
+    const maxTop = Math.max(stageRect.height - nayRect.height - 8, 8);
+
+    let left, top, candidate, tries = 0;
+    do{
+      left = 8 + Math.random() * (maxLeft - 8);
+      top = 8 + Math.random() * (maxTop - 8);
+      candidate = { left, right: left + nayRect.width, top, bottom: top + nayRect.height };
+      tries++;
+    } while(rectsOverlap(candidate, yayRel, 10) && tries < 8);
+
+    btnNay.style.left = left + 'px';
+    btnNay.style.top = top + 'px';
+
+    const scale = Math.max(1 - nayAttempts * 0.08, 0.6);
+    btnNay.style.fontSize = (0.92 * scale) + 'rem';
+
+    if(nayAttempts >= nayPhrases.length - 1){
+      btnNay.style.opacity = '0.5';
+      btnYay.classList.add('pulse');
+    }
+  }
+
+  placeNayInitial();
+
+  btnNay.addEventListener('mouseenter', dodgeNay);
+  btnNay.addEventListener('click', (e)=>{ e.preventDefault(); dodgeNay(); });
+  btnNay.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodgeNay(); }, {passive:false});
+
+  btnYay.addEventListener('click', () => showScreen('screen-calendar'));
+
+  // ---------- Page 2: Calendar ----------
+  const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const weekdayShort = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let viewYear = today.getFullYear();
+  let viewMonth = today.getMonth();
+  let selectedDate = null; // Date object
+  let selectedTime = null;
+
+  const calMonthLabel = document.getElementById('calMonthLabel');
+  const calWeekdays = document.getElementById('calWeekdays');
+  const calGrid = document.getElementById('calGrid');
+  const prevMonthBtn = document.getElementById('prevMonth');
+  const nextMonthBtn = document.getElementById('nextMonth');
+  const timePicker = document.getElementById('timePicker');
+  const timePills = document.getElementById('timePills');
+  const btnConfirmDate = document.getElementById('btnConfirmDate');
+
+  weekdayShort.forEach(d=>{
+    const span = document.createElement('span');
+    span.textContent = d;
+    calWeekdays.appendChild(span);
+  });
+
+  const timeSlots = ['18.00', '19.00', '19.30', '20.00'];
+  timeSlots.forEach(t=>{
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'time-pill';
+    pill.textContent = t + ' WIB';
+    pill.addEventListener('click', ()=>{
+      document.querySelectorAll('.time-pill').forEach(p=>p.classList.remove('selected'));
+      pill.classList.add('selected');
+      selectedTime = t + ' WIB';
+      updateConfirmState();
+    });
+    timePills.appendChild(pill);
+  });
+
+  function updateConfirmState(){
+    if(selectedDate && selectedTime){
+      btnConfirmDate.classList.add('ready');
+    } else {
+      btnConfirmDate.classList.remove('ready');
+    }
+  }
+
+  function renderCalendar(){
+    calMonthLabel.textContent = monthNames[viewMonth] + ' ' + viewYear;
+    calGrid.innerHTML = '';
+
+    const firstDay = new Date(viewYear, viewMonth, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7; // Monday = 0
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    for(let i=0; i<startOffset; i++){
+      const empty = document.createElement('div');
+      empty.className = 'cal-day empty';
+      calGrid.appendChild(empty);
+    }
+
+    for(let d=1; d<=daysInMonth; d++){
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cal-day';
+      cell.textContent = d;
+      const cellDate = new Date(viewYear, viewMonth, d);
+      cellDate.setHours(0,0,0,0);
+
+      if(cellDate < today){
+        cell.disabled = true;
+      } else {
+        cell.addEventListener('click', ()=>{
+          document.querySelectorAll('.cal-day').forEach(c=>c.classList.remove('selected'));
+          cell.classList.add('selected');
+          selectedDate = cellDate;
+          timePicker.hidden = false;
+          updateConfirmState();
+        });
+      }
+
+      if(selectedDate && cellDate.getTime() === selectedDate.getTime()){
+        cell.classList.add('selected');
+      }
+
+      calGrid.appendChild(cell);
+    }
+
+    const isCurrentMonth = (viewYear === today.getFullYear() && viewMonth === today.getMonth());
+    prevMonthBtn.disabled = isCurrentMonth;
+  }
+
+  prevMonthBtn.addEventListener('click', ()=>{
+    viewMonth--;
+    if(viewMonth < 0){ viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+  nextMonthBtn.addEventListener('click', ()=>{
+    viewMonth++;
+    if(viewMonth > 11){ viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+
+  renderCalendar();
+
+  const dayNamesFull = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  function formatDateID(date){
+    return dayNamesFull[date.getDay()] + ', ' + date.getDate() + ' ' + monthNames[date.getMonth()] + ' ' + date.getFullYear();
+  }
+
+  btnConfirmDate.addEventListener('click', ()=>{
+    if(!selectedDate || !selectedTime) return;
+    document.getElementById('ticketDate').textContent = formatDateID(selectedDate);
+    document.getElementById('ticketTime').textContent = selectedTime;
+    showScreen('screen-ticket');
+  });
+
+  // ---------- Page 3 -> Page 4: lanjut ke dress code sebelum cetak ----------
+  document.getElementById('btnPrint').addEventListener('click', ()=>{
+    document.getElementById('dressTicketDate').textContent = document.getElementById('ticketDate').textContent;
+    document.getElementById('dressTicketTime').textContent = document.getElementById('ticketTime').textContent;
+    showScreen('screen-dresscode');
+  });
+
+  // ---------- Page 4: Foto dress code (file gambar lokal, bukan tombol upload) ----------
+  const dressPhotoImg = document.getElementById('dressPhotoImg');
+  const photoFallback = document.getElementById('photoFallback');
+
+  function showDressPhoto(){
+    dressPhotoImg.style.display = 'block';
+    photoFallback.style.display = 'none';
+  }
+  function showDressFallback(){
+    dressPhotoImg.style.display = 'none';
+    photoFallback.style.display = 'flex';
+  }
+
+  if(dressPhotoImg.complete){
+    if(dressPhotoImg.naturalWidth > 0){ showDressPhoto(); } else { showDressFallback(); }
+  } else {
+    dressPhotoImg.addEventListener('load', showDressPhoto);
+    dressPhotoImg.addEventListener('error', showDressFallback);
+  }
+
+  // ---------- Page 4: Cetak ----------
+  document.getElementById('btnPrintFinal').addEventListener('click', ()=>{
+    window.print();
+  });
+</script>
+
+</body>
+</html>
